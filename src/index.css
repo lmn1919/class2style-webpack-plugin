@@ -1,3 +1,28 @@
-.width-100{
-    width:100px
- }
+
+.cts__width__10{
+    width:10px
+}
+.cts__rectangle__100_10{
+    width:100px;
+    height:10px;
+}
+.cts__rectangle__100_100{
+    width:100px;
+    height:100px;
+}
+.cts__width__20{
+    width:20px;
+}
+.cts__color__red{
+    color:red;
+}
+.cts__color__#dd2526{
+    color:#dd2526;
+}
+.cts__color__green{
+    color:green;
+}
+.cts__rectangle__100_99{
+    width:100px;
+    height:99px;
+}

@@ -1,9 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
-
-const ClassToStyleWebpackPlugin = require('../class-to-style-webpack-plugin');
-const HtmlGetclassWebpackPlugin = require('../html-get-class-webpack-plugin');
+const Class2styleWebpackPlugin = require('../class2style-webpack-plugin');
 const rootDir = process.cwd();
 
 module.exports = {
@@ -41,7 +39,6 @@ module.exports = {
       scriptLoading: 'blocking',
     }),
     new CleanWebpackPlugin(),
-    new HtmlGetclassWebpackPlugin()
-    // new ClassToStyleWebpackPlugin({outFileName:"buildInfo"})
+    new Class2styleWebpackPlugin()
   ],
 }

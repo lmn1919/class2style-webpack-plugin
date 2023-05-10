@@ -2,14 +2,13 @@ const fs = require('fs');
 const path = require('path');
 const htmlparser2 = require('htmlparser2');
 const babelParser = require('@babel/parser');
-const classToStyleClass = require('../classToStyle');
-class HtmlGetclassWebpackPlugin {
+class Class2styleWebpackPlugin {
     prefix
     constructor(options) {
         this.prefix = options || 'cts';
     }
     apply(compiler) {
-        compiler.hooks.watchRun.tapAsync('HtmlGetclassWebpackPlugin', (compilation, callback) => {
+        compiler.hooks.watchRun.tapAsync('Class2styleWebpackPlugin', (compilation, callback) => {
             const changedFiles = compilation.modifiedFiles;
             if (changedFiles) {
                 changedFiles.forEach((file) => {
@@ -41,7 +40,7 @@ class HtmlGetclassWebpackPlugin {
 
         parser.write(content);
         parser.end();
-      
+
         let classNameArr = Array.from(classNames)
         this.creactCss(classNameArr)
     }
@@ -75,33 +74,61 @@ class HtmlGetclassWebpackPlugin {
         this.creactCss(classNameArr)
     }
 
-    creactCss(classList) {
+    async creactCss(classList) {
+        delete require.cache[require.resolve('/classToStyle.js')];
+        const ClassToStyle = require('/classToStyle.js');
+        let classToStyleClass=new ClassToStyle()
         let uniqueArr = [...new Set(classList)];
         const regex = new RegExp(`^${this.prefix}`);
-        let filterArr=uniqueArr.filter(el=>regex.test(el));
-        console.log( '筛选class', filterArr)
+        //获取
+        let fileData = await this.getFileData(); //
+        let filterArr = uniqueArr.filter(el => regex.test(el) && fileData.indexOf(el) < 0);
+        console.log('class类', filterArr,classToStyleClass.rectangle,ClassToStyle)
+        let classText = ""
+        filterArr.forEach(el => {
+            let classArr = el.split("__");
+            let functionName = classArr[1]; //get function name
+            let classArguments = classArr[2].split("_"); //get arguments
+            console.log(functionName,classArguments)
+            let classResult = classToStyleClass[functionName](...classArguments)
+          
 
-//         let classResult = classToStyleClass.width(100)
-//         let classText = `.width-100{`
-//         for (let key in classResult) {
-//             classText += `
-//     ${key}:${classResult[key]}`
-//         }
-//         classText = `${classText}
-//  }`
+            let itemClassText = `
+.${el}{`
+            for (let key in classResult) {
+                itemClassText += `
+    ${key}:${classResult[key]};`
+            }
 
-//         fs.writeFile('src/index.css', classText, (error) => {
+            itemClassText = `${itemClassText}
+}`
 
-//             // 创建失败
-//             if (error) {
-//                 console.log(`创建失败：${error}`)
-//             }
+         classText=`${classText}${itemClassText}`
+        })
+        console.log('结果',classText)   
+        fs.appendFile('src/index.css', classText, (error) => {
 
-//             // 创建成功
-//             console.log(`创建成功！`)
+            // 创建失败
+            if (error) {
+                console.log(`创建失败：${error}`)
+            }
+            // 创建成功
+            console.log(`创建成功！`)
 
-//         })
+        })
+    }
+
+
+    getFileData() {
+        return new Promise((resolve, reject) => {
+            fs.readFile('src/index.css', (err, data) => {
+                // 读取失败
+                if (err) reject(err)
+                 // 读取成功
+                resolve(data)
+            })
+        })
     }
 }
 
-module.exports = HtmlGetclassWebpackPlugin;
+module.exports = Class2styleWebpackPlugin;
