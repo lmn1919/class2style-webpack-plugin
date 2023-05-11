@@ -39,6 +39,9 @@ module.exports = {
       scriptLoading: 'blocking',
     }),
     new CleanWebpackPlugin(),
-    new Class2styleWebpackPlugin()
+    new Class2styleWebpackPlugin({
+      ruleConfigPath:'classToStyle.js',
+      output:'src/index.css'
+    })
   ],
 }

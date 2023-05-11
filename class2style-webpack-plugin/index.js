@@ -2,10 +2,15 @@ const fs = require('fs');
 const path = require('path');
 const htmlparser2 = require('htmlparser2');
 const babelParser = require('@babel/parser');
+
 class Class2styleWebpackPlugin {
-    prefix
+    prefix;
+    ruleConfigPath;
+    output
     constructor(options) {
-        this.prefix = options || 'cts';
+        this.prefix = options.prefix || 'cts';
+        this.ruleConfigPath = options.ruleConfigPath||'classToStyle.js';
+        this.output=options.output;
     }
     apply(compiler) {
         compiler.hooks.watchRun.tapAsync('Class2styleWebpackPlugin', (compilation, callback) => {
@@ -75,23 +80,23 @@ class Class2styleWebpackPlugin {
     }
 
     async creactCss(classList) {
-        delete require.cache[require.resolve('/classToStyle.js')];
-        const ClassToStyle = require('/classToStyle.js');
-        let classToStyleClass=new ClassToStyle()
+        const rootFilePath = path.resolve(this.ruleConfigPath);
+        delete require.cache[require.resolve(rootFilePath)];
+        const ClassToStyle = require(rootFilePath);
+        let classToStyleClass = new ClassToStyle()
         let uniqueArr = [...new Set(classList)];
         const regex = new RegExp(`^${this.prefix}`);
         //获取
         let fileData = await this.getFileData(); //
         let filterArr = uniqueArr.filter(el => regex.test(el) && fileData.indexOf(el) < 0);
-        console.log('class类', filterArr,classToStyleClass.rectangle,ClassToStyle)
         let classText = ""
         filterArr.forEach(el => {
             let classArr = el.split("__");
             let functionName = classArr[1]; //get function name
             let classArguments = classArr[2].split("_"); //get arguments
-            console.log(functionName,classArguments)
+            console.log(functionName, classArguments)
             let classResult = classToStyleClass[functionName](...classArguments)
-          
+
 
             let itemClassText = `
 .${el}{`
@@ -103,10 +108,9 @@ class Class2styleWebpackPlugin {
             itemClassText = `${itemClassText}
 }`
 
-         classText=`${classText}${itemClassText}`
+            classText = `${classText}${itemClassText}`
         })
-        console.log('结果',classText)   
-        fs.appendFile('src/index.css', classText, (error) => {
+        fs.appendFile(this.output, classText, (error) => {
 
             // 创建失败
             if (error) {
@@ -121,10 +125,11 @@ class Class2styleWebpackPlugin {
 
     getFileData() {
         return new Promise((resolve, reject) => {
-            fs.readFile('src/index.css', (err, data) => {
+            fs.readFile(this.output, (err, data) => {
                 // 读取失败
-                if (err) reject(err)
-                 // 读取成功
+                // console.log('报错',err)
+                if (err) resolve('')
+                // 读取成功
                 resolve(data)
             })
         })
