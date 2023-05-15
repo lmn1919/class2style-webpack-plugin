@@ -2,23 +2,37 @@ const fs = require('fs');
 const path = require('path');
 const htmlparser2 = require('htmlparser2');
 const babelParser = require('@babel/parser');
-
+const glob = require('glob');
 class Class2styleWebpackPlugin {
     prefix;
     ruleConfigPath;
-    output
+    output;
+    folderPath;
     constructor(options) {
         this.prefix = options.prefix || 'cts';
-        this.ruleConfigPath = options.ruleConfigPath||'classToStyle.js';
-        this.output=options.output;
+        this.ruleConfigPath = options.ruleConfigPath || 'classToStyle.js';
+        this.output = options.output;
+        this.folderPath = options.folderPath;
     }
     apply(compiler) {
+        compiler.hooks.done.tap('Class2styleWebpackPlugin', () => {
+            const files = glob.sync(`src/**/*.{html,vue,jsx}`);
+            files.forEach((file) => {
+                const ext = path.extname(file);
+                if (ext === '.html' || ext === '.vue') {
+                    this.extractClassesFromHTML(file);
+                } else if (ext === '.jsx') {
+                    this.extractClassesFromJSX(file);
+                }
+
+            });
+        })
+
         compiler.hooks.watchRun.tapAsync('Class2styleWebpackPlugin', (compilation, callback) => {
             const changedFiles = compilation.modifiedFiles;
             if (changedFiles) {
                 changedFiles.forEach((file) => {
                     const ext = path.extname(file);
-
                     if (ext === '.html' || ext === '.vue') {
                         this.extractClassesFromHTML(file);
                     } else if (ext === '.jsx') {

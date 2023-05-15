@@ -41,7 +41,8 @@ module.exports = {
     new CleanWebpackPlugin(),
     new Class2styleWebpackPlugin({
       ruleConfigPath:'classToStyle.js',
-      output:'src/index.css'
+      output:'src/index.css',
+      folderPath:'src',
     })
   ],
 }
