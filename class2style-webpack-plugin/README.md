@@ -1,9 +1,7 @@
 # class2style-webpack-plugin
-
 这是一个允许你使用类函数的方式生成css的webpack插件，支持webpack4.0，webpack5.0。只需要简单的配置，就可以将.html，.vue，.jsx，.tsx文件中的类名转化成css样式。
 
 ### 工作原理
-
 1. 在项目启动或者文件变动时，获取文件中已固定规则创建的class
 2. 将class解析出‘函数名’、‘参数’
 3. 调用函数生成css
@@ -12,15 +10,11 @@
 
 ##### 安装
 
-
 ```bash
 npm install class2style-webpack-plugin
 ```
 
-
-
 ##### 插件配置
-
 
 ```javascript
 //webpack.base.js
@@ -39,10 +33,7 @@ module.exports = {
 }
 ```
 
-
-
 ##### 配置参数
-
 
 | 参数名         | 是否必填 | 类型   | 说明                                              |
 | -------------- | -------- | ------ | ------------------------------------------------- |
@@ -53,46 +44,8 @@ module.exports = {
 
 ##### 生成规则配置
 
-生成规则配置文件导出一个ClassToStyle类，在类中定义样式生成的方法
-
-```javascript
-class ClassToStyle{
-   //宽度
-   width(value){
-      return {
-        width:`${value}px`
-      }
-   };
-   //矩形
-   rectangle(width,height){
-      return {
-         width:`${width}px`,
-         height:`${height}px`
-       }
-   };
-   //颜色
-   color(color){
-      return {
-         color:`${color}`,
-       }
-   };
-  
-}
-
-module.exports =ClassToStyle;
-```
-
-
+待
 
 ##### class命名规则
 
-插件的class命名规则示例
-
-```html
- <div class="cts__rectangle__100_10 cts__color__red">
-        <div class="cts__width__10">标题</h2>
- </div>
-```
-
-'cts'为前缀，'rectangle'、'color'、‘width’为方法名，对应生成规则配置文件中的方法，’100_10‘，’red‘，’10‘为参数，多个参数以“_”分隔。前缀、方法名、参数以“__”分隔
-
+待

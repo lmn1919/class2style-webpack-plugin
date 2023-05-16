@@ -1,0 +1,15 @@
+{
+  "name": "class2style-webpack-plugin",
+  "version": "1.0.1",
+  "description": "",
+  "main": "bundle.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "peerDependencies": {
+    "@babel/parser": "^7.21.8",
+    "htmlparser2": "^9.0.0"
+  }
+}

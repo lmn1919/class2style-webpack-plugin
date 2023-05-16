@@ -1,7 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
-const Class2styleWebpackPlugin = require('../class2style-webpack-plugin');
+const Class2styleWebpackPlugin = require('class2style-webpack-plugin');
 const rootDir = process.cwd();
 
 module.exports = {
